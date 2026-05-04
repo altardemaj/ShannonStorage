@@ -10,6 +10,7 @@ const requestForm = document.querySelector("[data-request-form]");
 const requestNote = document.querySelector("[data-request-note]");
 
 const requestUrl = "request-a-unit.html";
+const requestEmail = "info@shannonstorage.ny";
 
 function updateHeader() {
   header.classList.toggle("is-scrolled", window.scrollY > 30);
@@ -67,7 +68,27 @@ updateAdvisor();
 if (requestForm && requestNote) {
   requestForm.addEventListener("submit", (event) => {
     event.preventDefault();
-    requestNote.textContent = "Thanks. This request form is ready to connect to Shannon Storage's email or CRM before launch.";
+    const formData = new FormData(requestForm);
+    const lines = [
+      "New Shannon Storage unit request",
+      "",
+      `Name: ${formData.get("name") || ""}`,
+      `Phone: ${formData.get("phone") || ""}`,
+      `Email: ${formData.get("email") || ""}`,
+      `Preferred contact: ${formData.get("contactMethod") || ""}`,
+      "",
+      `Current address: ${formData.get("address") || ""}`,
+      `Move-in date: ${formData.get("moveDate") || ""}`,
+      `Unit size: ${formData.get("unitSize") || ""}`,
+      `Storage type: ${formData.get("storageType") || ""}`,
+      "",
+      `Notes: ${formData.get("notes") || ""}`,
+    ];
+    const subject = encodeURIComponent("New storage unit request");
+    const body = encodeURIComponent(lines.join("\n"));
+
+    requestNote.textContent = `Opening an email to ${requestEmail} with this request.`;
     requestForm.classList.add("is-submitted");
+    window.location.href = `mailto:${requestEmail}?subject=${subject}&body=${body}`;
   });
 }
